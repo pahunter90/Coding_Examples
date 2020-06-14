@@ -1,2 +1,3 @@
 # Machine_Learning_Examples
-Practice Machine Learning Projects
+Practice Coding Projects
+Various languages, but mainly python
