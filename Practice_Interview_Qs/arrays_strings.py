@@ -79,6 +79,68 @@ def oneAway(s1, s2):
                 return True
     return False
 
+# Problem 1.6
+def condenseString(s):
+    if len(s) < 3:
+        return s
+    start = 0
+    end = 0
+    c = ""
+    while start < len(s):
+        while end < len(s) and s[start] == s[end]:
+            end += 1
+        d = end - start
+        c = c + s[start] + str(d)
+        start = end
+    if len(c) < len(s):
+        return c
+    else:
+        return s
+
+# Problem 1.7
+def rotateMatrix(A):
+    M = len(A)
+    N = len(A[0])
+    assert(M == N)
+    for i in xrange(M):
+        for j in xrange(i):
+            temp = A[i][j]
+            A[i][j] = A[j][i]
+            A[j][i] = temp
+    for i in xrange(M):
+        A[i] = A[i][::-1]
+    return A
+
+# Problem 1.8
+def zeroMatrix(A):
+    M = len(A)
+    N = len(A[0])
+    if M <= 1 and N <=1:
+        return A
+    eyes = []
+    jays = []
+    for i in xrange(M):
+        for j in xrange(N):
+            if A[i][j] == 0:
+                eyes = eyes + [i]
+                jays = jays + [j]
+    for i in eyes:
+        for j in xrange(N):
+            A[i][j] = 0
+    for j in jays:
+        for i in xrange(M):
+            A[i][j] = 0
+    return A
+
+# Problem 1.9
+def stringRotation(s1, s2):
+    if len(s1) != len(s2):
+        return False
+    elif len(s1) == 0 and len(s2) == 0:
+        return True
+    else:
+        s1 = s1 + s1
+        return s1.find(s2) >= 0
 
 # Test cases
 def main():
@@ -164,6 +226,65 @@ def main():
     print("all test cases passed!")
     print("")
     print("")
+
+    print("Running test cases for condenseString:")
+    s = ""
+    assert(condenseString(s) == s)
+    s = "a"
+    assert(condenseString(s) == s)
+    s = "aa"
+    assert(condenseString(s) == s)
+    s = "aaa"
+    assert(condenseString(s) == "a3")
+    s = "aabcccccaaa"
+    assert(condenseString(s) == "a2b1c5a3")
+    s = "aabbccddeeffgg"
+    assert(condenseString(s) == s)
+    print("all test cases passed!")
+    print("")
+    print("")
+
+    print("Running test cases for rotateMatrix:")
+    A = [[1]]
+    assert(rotateMatrix(A) == A)
+    A = [[1,2],[3,4]]
+    assert(rotateMatrix(A) == [[3,1],[4,2]])
+    print("all test cases passed!")
+    print("")
+    print("")
+
+    print("Running test cases for zeroMatrix:")
+    A = [[]]
+    assert(zeroMatrix(A) == A)
+    A = [[0]]
+    assert(zeroMatrix(A) == A)
+    A = [[1]]
+    assert(zeroMatrix(A) == A)
+    A = [[1,0]]
+    assert(zeroMatrix(A) == [[0,0]])
+    A = [[1,1],[1,0]]
+    assert(zeroMatrix(A) == [[1,0],[0,0]])
+    print("all test cases passed!")
+    print("")
+    print("")
+
+    print("Running test cases for stringRotation:")
+    s1 = ""
+    s2 = ""
+    assert(stringRotation(s1,s2) == True)
+    s1 = "a"
+    s2 = "a"
+    assert(stringRotation(s1,s2) == True)
+    s1 = "abba"
+    s2 = "bbaa"
+    assert(stringRotation(s1,s2) == True)
+    s1 = "abba"
+    s2 = "baba"
+    assert(stringRotation(s1,s2) == False)
+    print("all test cases passed!")
+    print("")
+    print("")
+    
 
 if __name__ == "__main__":
     main()
