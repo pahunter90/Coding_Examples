@@ -1,7 +1,15 @@
 CC = gcc
 CFLAGS = -g -Wall
 
-TARGET = runtests
+TARGETVEC = testvec
+TARGETMAT = testmat
 
-$(TARGET): tests.c Vector.c
-	$(CC) $(CFLAGS) -o $(TARGET) tests.c Vector.c
+all: $(TARGETVEC) $(TARGETMAT)
+
+$(TARGETVEC): vectorTests.c Vector.c
+	$(CC) $(CFLAGS) -o $(TARGETVEC) vectorTests.c Vector.c
+
+$(TARGETMAT): matrixTests.c Matrix.c Vector.c
+	$(CC) $(CFLAGS) -o $(TARGETMAT) matrixTests.c Matrix.c Vector.c
+
+.PHONY: all

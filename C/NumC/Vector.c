@@ -1,7 +1,7 @@
 #include"Vector.h"
 
 // Returns the location of a Vector with n elements all initiialized to 0
-Vector* zeros(int n)
+Vector* zeroVector(int n)
 {
 	Vector* vec = (Vector*)malloc(sizeof(Vector));
 	vec->data = (int*)malloc(sizeof(int)*n);
@@ -14,7 +14,7 @@ Vector* zeros(int n)
 }
 
 // Returns the location of a Vector with n elements all initiialized to 1
-Vector* ones(int n)
+Vector* onesVector(int n)
 {
 	Vector* vec = (Vector*)malloc(sizeof(Vector));
 	vec->data = (int*)malloc(sizeof(int)*n);
@@ -27,7 +27,7 @@ Vector* ones(int n)
 }
 
 // Adds the element a to the vector v
-void append(Vector* v, int a)
+void appendVector(Vector* v, int a)
 {
 	v->data = (int*)realloc(v->data,sizeof(int)*++v->length);
 	v->data[v->length-1] = a;
@@ -35,7 +35,7 @@ void append(Vector* v, int a)
 
 // Adds all of the elements of v2 into v1 and sets v2 to empty ([])
 // If either v1 or v2 is null the function returns with no changes made
-void concat(Vector* v1, Vector* v2)
+void concatVector(Vector* v1, Vector* v2)
 {
 	if (v1 == NULL || v2 == NULL)
 	{
@@ -43,7 +43,7 @@ void concat(Vector* v1, Vector* v2)
 	}
 	for(int i = 0; i < v2->length; i++)
 	{
-		append(v1,v2->data[i]);
+		appendVector(v1,v2->data[i]);
 	}
 	free(v2->data);
 	v2->length = 0;
@@ -51,7 +51,7 @@ void concat(Vector* v1, Vector* v2)
 
 // Swaps the values in slot elem1 and elem2
 // If unsuccessful v remains unchanged
-void swap(Vector* v, int elem1, int elem2)
+void swapVector(Vector* v, int elem1, int elem2)
 {
 	if (elem1<0 || elem1>=v->length || elem2<0 || elem2>=v->length)
 	{
@@ -64,7 +64,7 @@ void swap(Vector* v, int elem1, int elem2)
 
 // Sets the value of element elem to val
 // If unsuccessful v remains unchanged
-void set(Vector* v, int elem, int val)
+void setVector(Vector* v, int elem, int val)
 {
 	if(elem <0 || elem>=v->length)
 	{
@@ -75,13 +75,13 @@ void set(Vector* v, int elem, int val)
 
 // Adds to vectors (v1 + v2), and returns the location of the result
 // returns NULL if the vectors are not of the same length
-Vector* add(Vector* v1, Vector* v2)
+Vector* addVector(Vector* v1, Vector* v2)
 {
 	if (v1->length != v2->length)
 	{
 		return NULL;
 	}
-	Vector* v = zeros(v1->length);
+	Vector* v = zeroVector(v1->length);
 	for(int i=0; i < v1->length; i++)
 	{
 		v->data[i] = v1->data[i] + v2->data[i];
@@ -89,14 +89,32 @@ Vector* add(Vector* v1, Vector* v2)
 	return v;
 }
 
-// Returns the location of a Vector defined by s*v
-Vector* scalar(int s, Vector* v)
+// Adds v2 to v1 storing the result in v1
+// If the vectors are not compatible returns without making changes
+void _addVector(Vector* v1, Vector* v2)
 {
+	if (v1->length != v2->length)
+	{
+		return;
+	}
+	for (int i=0; i < v1->length; i++)
+	{
+		v1->data[i] += v2->data[i];
+	}
+}
+
+// Returns the location of a Vector defined by s*v
+Vector* scalarVector(int s, Vector* v)
+{
+	if(v==NULL)
+	{
+		return NULL;
+	}
 	if(s==0)
 	{
-		return zeros(v->length);
+		return zeroVector(v->length);
 	}
-	Vector* sv = zeros(v->length);
+	Vector* sv = zeroVector(v->length);
 	for(int i=0; i < v->length; i++)
 	{
 		sv->data[i] = s*v->data[i];
@@ -104,14 +122,27 @@ Vector* scalar(int s, Vector* v)
 	return sv;
 }
 
+// Multiplies v by scalar s, storing the result in v
+void _scalarVector(int s, Vector* v)
+{
+	if(v==NULL)
+	{
+		return;
+	}
+	for(int i=0; i < v->length; i++)
+	{
+		v->data[i] *= s;
+	}
+}
+
 // Multiplies v1 and v2 component-wise, and returns the location of the result
-Vector* multiply(Vector* v1, Vector* v2)
+Vector* multiplyVector(Vector* v1, Vector* v2)
 {
 	if (v1->length != v2->length)
 	{
 		return NULL;
 	}
-	Vector* v = zeros(v1->length);
+	Vector* v = zeroVector(v1->length);
 	for(int i=0; i < v1->length; i++)
 	{
 		v->data[i] = v1->data[i] * v2->data[i];
@@ -119,50 +150,65 @@ Vector* multiply(Vector* v1, Vector* v2)
 	return v;
 }
 
-// Returns the location of the element-wise exponential v^e
-Vector* exponent(Vector* v, int e)
+// Multiplies v2 into v1 and stores the result in v1
+void _multiplyVector(Vector* v1, Vector* v2)
 {
-	if(e == 0)
+	if(v1->length != v2->length)
 	{
-		return ones(v->length);
+		return;
 	}
-	int neg_pow = (e < 0);
-	int pos_e = e;
-	if (neg_pow)
+	for(int i=0; i < v1->length; i++)
 	{
-		pos_e = 0-pos_e;
+		v1->data[i] *= v2->data[i];
 	}
-	Vector* ve = zeros(v->length);
+}
+
+// Returns the location of the element-wise exponential v^e
+// Allows non-negative exponents only
+Vector* exponentVector(Vector* v, int e)
+{
+	if(v == NULL || e < 0)
+	{
+		return NULL;
+	}
+	Vector* ve = onesVector(v->length);
 	for (int i=0; i < v->length; i++)
-	{
-		if(v->data[i] == 0 && neg_pow)
+	{			
+		for(int j = 1; j <= e; j++)
 		{
-			return NULL;
-		}
-		if(v->data[i] > 1 && neg_pow)
-		{
-			ve->data[i] = 0;
-			continue;
-		}
-		ve->data[i] = v->data[i];
-		if(ve->data[i] == 1 || ve->data[i] == 0)
-		{
-			continue;
-		}
-		for(int j = 2; j<=pos_e; j++)
-		{
-			ve->data[i] = ve->data[i]*v->data[i];
-		}
-		if (neg_pow)
-		{
-			ve->data[i] = 1/ve->data[i];
+			ve->data[i] *= v->data[i];
+			if(ve->data[i] == 0 || ve->data[i] == 1)
+			{
+				break;
+			}
 		}
 	}
 	return ve;
 }
+
+// Computes the element-wise exponential v^e and stores in v
+// Allows non-negative exponents only (v remains unchanged if negative)
+void _exponentVector(Vector* v, int e)
+{
+	if(v == NULL || e == 1 || e < 0)
+	{
+		return;
+	}
+	int* temp = (int*)malloc(sizeof(int)*v->length);
+	for(int i = 0; i < v->length; i++)
+	{
+		temp[i] = 1;
+		for(int j = 1; j <= e; j++)
+		{
+			temp[i] *= v->data[i];
+		}
+		v->data[i] = temp[i];
+	}
+	free(temp);
+}
 	
 // Returns the sum of the elements in v
-int sum(Vector* v)
+int sumVector(Vector* v)
 {
 	int sum = 0;
 	for (int i=0; i < v->length; i++)
@@ -173,7 +219,7 @@ int sum(Vector* v)
 }
 
 // Returns the number of elements in v not equal to 0
-int count(Vector* v)
+int countVector(Vector* v)
 {
 	int count = 0;
 	for (int i=0; i < v->length; i++)
@@ -186,7 +232,7 @@ int count(Vector* v)
 // Takes the dot product of two vectors (v1 & v2)
 // Returns an integer array, the first element is the return value
 // and the second element is an error checker (1 if no error, 0 if error)
-int* dot(Vector* v1, Vector* v2)
+int* dotVector(Vector* v1, Vector* v2)
 {
 	int* output = (int*)malloc(2*sizeof(int));
 	output[0] = 0;
@@ -206,7 +252,7 @@ int* dot(Vector* v1, Vector* v2)
 // Prints a vector to the console as [a,b,c,d]
 // if the location of vec is set to NULL, prints "NULL"
 // A newline is printed at the end of the vector (or NULL)
-void print(Vector* vec)
+void printVector(Vector* vec)
 {
 	if(vec == NULL)
 	{

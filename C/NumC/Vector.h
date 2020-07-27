@@ -12,29 +12,35 @@ typedef struct Vector
 Vector;
 
 // Initialize as zeros or ones
-Vector* zeros(int n);
-Vector* ones(int n);
+Vector* zeroVector(int n);
+Vector* onesVector(int n);
 
 // Functions that edit the current vector
-void append(Vector* v, int a);
-void concat(Vector* v1, Vector* v2);
-void swap(Vector* v, int elem1, int elem2);
-void set(Vector* v, int elem, int val);
+void appendVector(Vector* v, int a);
+void concatVector(Vector* v1, Vector* v2);
+void swapVector(Vector* v, int elem1, int elem2);
+void setVector(Vector* v, int elem, int val);
 
 // Add, scalar multiply, component multiply, scalar exponent
 // These all return vector objects
-Vector* add(Vector* v1, Vector* v2);
-Vector* scalar(int s, Vector* v);
-Vector* multiply(Vector* v1, Vector* v2);
-Vector* exponent(Vector* v, int e);
+Vector* addVector(Vector* v1, Vector* v2);
+Vector* scalarVector(int s, Vector* v);
+Vector* multiplyVector(Vector* v1, Vector* v2);
+Vector* exponentVector(Vector* v, int e);
+
+// In-place versions of the previous functions
+void _addVector(Vector* v1, Vector* v2);
+void _scalarVector(int s, Vector* v);
+void _multiplyVector(Vector* v1, Vector* v2);
+void _exponentVector(Vector* v, int e);
 
 // Sum, count, dot product 
 // These all return integers or integer arrays
-int sum(Vector* v);
-int count(Vector* v);
-int* dot(Vector* v1, Vector* v2);
+int sumVector(Vector* v);
+int countVector(Vector* v);
+int* dotVector(Vector* v1, Vector* v2);
 
 // Print a vector to the console
-void print(Vector* vec);
+void printVector(Vector* vec);
 
 #endif
