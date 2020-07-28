@@ -11,9 +11,11 @@ typedef struct Vector
 }
 Vector;
 
-// Initialize as zeros or ones
+// Initialize as blank, zeros, or ones
+Vector* blankVector(int n);
 Vector* zeroVector(int n);
 Vector* onesVector(int n);
+Vector* copyVector(Vector* v);
 
 // Functions that edit the current vector
 void appendVector(Vector* v, int a);

@@ -1,29 +1,45 @@
 #include"Vector.h"
 
+// Creates a black vector of length n (no values set)
+Vector* blankVector(int n)
+{
+	Vector* v = (Vector*)malloc(sizeof(Vector));
+	v->data = (int*)malloc(sizeof(int)*n);
+	v->length = n;
+	return v;
+}
+
 // Returns the location of a Vector with n elements all initiialized to 0
 Vector* zeroVector(int n)
 {
-	Vector* vec = (Vector*)malloc(sizeof(Vector));
-	vec->data = (int*)malloc(sizeof(int)*n);
-	vec->length = n;
-	for (int i=0; i<n; i++)
+	Vector* v = blankVector(n);
+	for (int i=0; i<v->length; i++)
 	{
-		vec->data[i] = 0;
+		v->data[i] = 0;
 	}
-	return vec;
+	return v;
 }
 
 // Returns the location of a Vector with n elements all initiialized to 1
 Vector* onesVector(int n)
 {
-	Vector* vec = (Vector*)malloc(sizeof(Vector));
-	vec->data = (int*)malloc(sizeof(int)*n);
-	vec->length = n;
-	for (int i=0; i<n; i++)
+	Vector* v = blankVector(n);
+	for (int i=0; i<v->length; i++)
 	{
-		vec->data[i] = 1;
+		v->data[i] = 1;
 	}
-	return vec;
+	return v;
+}
+
+// Returns a copy of the vector v
+Vector* copyVector(Vector* v)
+{
+	Vector* vcopy = blankVector(v->length);
+	for(int i=0; i<vcopy->length; i++)
+	{
+		vcopy->data[i] = v->data[i];
+	}
+	return vcopy;
 }
 
 // Adds the element a to the vector v

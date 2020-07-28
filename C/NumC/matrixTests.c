@@ -1,7 +1,11 @@
 #include"Matrix.h"
+#include<malloc.h>
+#include"leak_detector_c.h"
 
 int main()
 {
+	atexit(report_mem_leak);
+
 	printf("Create a 3x3 zero matrix\n");
 	Matrix* M1 = zeroMatrix(3,3);
 	printMatrix(M1);
@@ -37,11 +41,25 @@ int main()
 	printMatrix(M5);
 	printf("\n");
 
+	printf("Create a non-squre matrix\n");
+	Matrix* M6 = onesMatrix(6,3);
+	printMatrix(M6);
+	printf("\n");
+
+	printf("Transpose the previous matrix\nFirst to a new matrix\n");
+	Matrix* M7 = transpose(M6);
+	printMatrix(M7);
+	printf("then in place\n");
+	_transpose(M6);
+	printMatrix(M6);
+
 	free(M1);
 	free(M2);
 	free(M3);
 	free(M4);
 	free(M5);
+	free(M6);
+	free(M7);
 
 	return 0;
 }
