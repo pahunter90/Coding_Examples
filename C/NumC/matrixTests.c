@@ -1,11 +1,7 @@
 #include"Matrix.h"
-#include<malloc.h>
-#include"leak_detector_c.h"
 
 int main()
 {
-	atexit(report_mem_leak);
-
 	printf("Create a 3x3 zero matrix\n");
 	Matrix* M1 = zeroMatrix(3,3);
 	printMatrix(M1);

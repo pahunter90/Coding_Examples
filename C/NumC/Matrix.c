@@ -167,7 +167,7 @@ Matrix* transpose(Matrix* M)
 // Transpose M in place
 void _transpose(Matrix* M)
 {
-	int min_dim = M->rows*(M->rows <= M->columns) + M->columns*(M->rows > M->columns);
+	int min_dim = (M->rows <= M->columns) ? M->rows : M->columns;
 	for(int i=1; i<min_dim; i++)
 	{
 		for(int j=0; j<i; j++)
