@@ -220,6 +220,71 @@ void _transpose(Matrix* M)
 	}
 }
 
+// Return the determinant of an nxn matrix
+// The second value of the return is 0 if an error is found, 1 otherwise
+// Because Matrix uses integers and an upper triangular form of M cannot be guaranteed
+// this function can take a long time and use an extraordinary amount of RAM on large matrices
+// for better performance use the dMatrix object (not yet completed)
+int* determinant(Matrix* M)
+{
+	int* output = (int*)malloc(sizeof(int)*2);
+	output[0] = 0;
+	if (M->rows != M->columns)
+	{
+		output[1] = 0;
+		return output;
+	}
+	output[1] = 1;
+	if (M->rows == 2)
+	{
+		output[0] += M->data[0]->data[0]*M->data[1]->data[1];
+		output[0] -= M->data[1]->data[0]*M->data[0]->data[1];
+		return output;
+	}
+	for(int k=0; k<M->columns; k++)
+	{
+		if(M->data[0]->data[k] != 0)
+		{
+			Matrix* interior = blankMatrix(M->rows-1,M->rows-1);
+			for (int i=1; i<M->rows; i++)
+			{
+				for (int j=0; j<M->columns; j++)
+				{
+					if (j < k)
+					{
+						interior->data[i-1]->data[j] = M->data[i]->data[j];
+					}
+					if (j > k)
+					{
+						interior->data[i-1]->data[j-1] = M->data[i]->data[j];
+					}
+				}
+			}
+			output[0] += ((k%2==0) ? 1 : -1) * M->data[0]->data[k]*determinant(interior)[0];
+		}
+	}
+	return output;
+}
+
+// Calculate the trace of a square matrix M
+int* trace(Matrix* M)
+{
+	int* output = (int*)malloc(sizeof(int)*2);
+	output[0] = 0;
+	if (M->rows != M->columns)
+	{
+		output[1] = 0;
+		return output;
+	}
+	output[1] = 1;
+	for(int i=0; i<M->rows; i++)
+	{
+		output[0] += M->data[i]->data[i];
+	}
+	return output;
+}
+
+
 // Print a matrix to the console
 void printMatrix(Matrix* M)
 {

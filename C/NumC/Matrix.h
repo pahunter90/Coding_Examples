@@ -32,6 +32,10 @@ Matrix* transpose(Matrix* M);
 // Transpose in place
 void _transpose(Matrix* M);
 
+// Functions for nxn matrices
+int* determinant(Matrix* M);
+int* trace(Matrix* M);
+
 // Print a matrix to the console
 void printMatrix(Matrix* M);
 
